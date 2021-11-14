@@ -6,7 +6,7 @@ var db = require('mongoose')
 const mongodb_URI = process.env.mongodb_URI || 'mongodb+srv://pangj130:Jonathan3388@cluster0.zw1as.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'
 app.use(express.json())
 
-app.get('/tests', (req, res) => {
+app.get('/users', (req, res) => {
     mongodb.connect(mongodb_URI, function(error, db) {
         if (error) throw error
         var dbo = db.db('BostonHacks')
@@ -16,6 +16,27 @@ app.get('/tests', (req, res) => {
             res.send(result)
             console.log(result)
             db.close()
+        })
+    })
+})
+
+app.post('/users/:id/:firstName/:lastName/:username/:password', (req, res) => {
+    const user = {
+        id: req.body.id,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        username: req.body.username,
+        password: req.body.password
+    }
+
+    mongodb.connect(mongodb_URI, function (error, db) {
+        if (error) throw error;
+        var dbo = db.db('BostonHacks')
+        dbo.collection('Users').insertOne(user, function(error, result) {
+            if (error) throw error;
+            assert.equal(null, error)
+            console.log('Item inserted')
+            db.close();
         })
     })
 })
